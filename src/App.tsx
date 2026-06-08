@@ -45,14 +45,14 @@ const CIRCLES_OF_CONFUSION: Record<
   Webcam: {
     coc: 0.002,
     sensorHeight: 3.6,
-    cropFactor: 9.6 
+    cropFactor: 9.6
   },
   Smartphone: {
     coc: 0.002,
     sensorHeight: 7.3,
     cropFactor: 6.1
   },
-  "35mm (full frame)": {
+  "35mm (formato completo)": {
     coc: 0.029,
     sensorHeight: 24,
     cropFactor: 1.0
@@ -62,17 +62,17 @@ const CIRCLES_OF_CONFUSION: Record<
     sensorHeight: 15.6,
     cropFactor: 1.52
   },
-  "Micro Four Thirds": {
+  "Micro Cuatro Tercios": {
     coc: 0.015,
     sensorHeight: 13,
     cropFactor: 2.0
   },
-  "6x6 (Medium Format)": {
+  "6x6 (Formato Medio)": {
     coc: 0.02,
     sensorHeight: 60,
     cropFactor: 0.55
   },
-  "6x7 (Medium Format)": {
+  "6x7 (Formato Medio)": {
     coc: 0.025,
     sensorHeight: 70,
     cropFactor: 0.47
@@ -86,72 +86,72 @@ const COMMON_SETUPS: {
   idealDistance: number;
   sensor: string;
 }[] = [
-  {
-    name: "Webcam",
-    focalLength: 3.6,
-    aperture: 2.8,
-    idealDistance: 36,
-    sensor: "Webcam",
-  },
-  {
-    name: "Smartphone",
-    focalLength: 4.3,
-    aperture: 2.0,
-    idealDistance: 36,
-    sensor: "Smartphone",
-  },
-  {
-    name: "APS-C - 35mm",
-    focalLength: 35,
-    aperture: 1.8,
-    idealDistance: 72,
-    sensor: "APS-C",
-  },
-  {
-    name: "FF - 28mm",
-    focalLength: 28,
-    aperture: 1.4,
-    idealDistance: 48,
-    sensor: "35mm (full frame)",
-  },
-  {
-    name: "FF - 35mm",
-    focalLength: 35,
-    aperture: 1.4,
-    idealDistance: 60,
-    sensor: "35mm (full frame)",
-  },
-  {
-    name: "FF - 50mm",
-    focalLength: 50,
-    aperture: 1.8,
-    idealDistance: 72,
-    sensor: "35mm (full frame)",
-  },
-  {
-    name: "FF - 70mm",
-    focalLength: 70,
-    aperture: 2.8,
-    idealDistance: 96,
-    sensor: "35mm (full frame)",
-  },
-  {
-    name: "6x6 - 80mm",
-    focalLength: 80,
-    aperture: 2.8,
-    idealDistance: 90,
-    sensor: "6x6 (Medium Format)",
-  },
-  {
-    name: "6x7 - 80mm",
-    focalLength: 80,
-    aperture: 2.8,
-    idealDistance: 80,
-    sensor: "6x7 (Medium Format)",
-  },
-];
+    {
+      name: "Webcam",
+      focalLength: 3.6,
+      aperture: 2.8,
+      idealDistance: 36,
+      sensor: "Webcam",
+    },
+    {
+      name: "Smartphone",
+      focalLength: 4.3,
+      aperture: 2.0,
+      idealDistance: 36,
+      sensor: "Smartphone",
+    },
+    {
+      name: "APS-C - 35mm",
+      focalLength: 35,
+      aperture: 1.8,
+      idealDistance: 72,
+      sensor: "APS-C",
+    },
+    {
+      name: "FF - 28mm",
+      focalLength: 28,
+      aperture: 1.4,
+      idealDistance: 48,
+      sensor: "35mm (formato completo)",
+    },
+    {
+      name: "FF - 35mm",
+      focalLength: 35,
+      aperture: 1.4,
+      idealDistance: 60,
+      sensor: "35mm (formato completo)",
+    },
+    {
+      name: "FF - 50mm",
+      focalLength: 50,
+      aperture: 1.8,
+      idealDistance: 72,
+      sensor: "35mm (formato completo)",
+    },
+    {
+      name: "FF - 70mm",
+      focalLength: 70,
+      aperture: 2.8,
+      idealDistance: 96,
+      sensor: "35mm (formato completo)",
+    },
+    {
+      name: "6x6 - 80mm",
+      focalLength: 80,
+      aperture: 2.8,
+      idealDistance: 90,
+      sensor: "6x6 (Formato Medio)",
+    },
+    {
+      name: "6x7 - 80mm",
+      focalLength: 80,
+      aperture: 2.8,
+      idealDistance: 80,
+      sensor: "6x7 (Formato Medio)",
+    },
+  ];
 
-const SYSTEMS = ["Metric", "Imperial"] as const;
+const SYSTEMS = ["Métrico", "Imperial"] as const;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -162,11 +162,11 @@ function App() {
     useState(72);
   const [focalLengthInMillimeters, setFocalLengthInMillimeters] = useState(50);
   const [aperture, setAperture] = useState(1.8);
-  const [subject, setSubject] = useState("Human");
+  const [subject, setSubject] = useState("Humano");
   const [system, setSystem] = useState<(typeof SYSTEMS)[number]>("Imperial");
-  const [sensor, setSensor] = useState("35mm (full frame)");
+  const [sensor, setSensor] = useState("35mm (formato completo)");
   const [customSensorWidth, setCustomSensorWidth] = useState(36);
-const [customSensorHeight, setCustomSensorHeight] = useState(24);
+  const [customSensorHeight, setCustomSensorHeight] = useState(24);
 
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -174,19 +174,19 @@ const [customSensorHeight, setCustomSensorHeight] = useState(24);
 
   const distanceToSubjectInMM = distanceToSubjectInInches * 25.4;
 
-  const isCustomSensor = sensor === "Custom";
-const customCocCalculated = Math.sqrt(customSensorWidth ** 2 + customSensorHeight ** 2) / 1500;
-const circleOfConfusionInMillimeters = isCustomSensor
-  ? customCocCalculated
-  : CIRCLES_OF_CONFUSION[sensor].coc;
-const cropFactor = isCustomSensor
-  ? 43.27 / Math.sqrt(customSensorWidth ** 2 + customSensorHeight ** 2)
-  : CIRCLES_OF_CONFUSION[sensor].cropFactor;
+  const isCustomSensor = sensor === "Personalizado";
+  const customCocCalculated = Math.sqrt(customSensorWidth ** 2 + customSensorHeight ** 2) / 1500;
+  const circleOfConfusionInMillimeters = isCustomSensor
+    ? customCocCalculated
+    : CIRCLES_OF_CONFUSION[sensor].coc;
+  const cropFactor = isCustomSensor
+    ? 43.27 / Math.sqrt(customSensorWidth ** 2 + customSensorHeight ** 2)
+    : CIRCLES_OF_CONFUSION[sensor].cropFactor;
 
   const hyperFocalDistanceInMM =
     focalLengthInMillimeters +
     (focalLengthInMillimeters * focalLengthInMillimeters) /
-      (aperture * circleOfConfusionInMillimeters);
+    (aperture * circleOfConfusionInMillimeters);
   const depthOfFieldFarLimitInMM =
     (hyperFocalDistanceInMM * distanceToSubjectInMM) /
     (hyperFocalDistanceInMM -
@@ -212,8 +212,8 @@ const cropFactor = isCustomSensor
   }
 
   const sensorHeight = isCustomSensor
-  ? customSensorHeight
-  : CIRCLES_OF_CONFUSION[sensor].sensorHeight;
+    ? customSensorHeight
+    : CIRCLES_OF_CONFUSION[sensor].sensorHeight;
   const verticalFieldOfView =
     (2 * Math.atan(sensorHeight / 2 / focalLengthInMillimeters) * 180) /
     Math.PI;
@@ -240,14 +240,14 @@ const cropFactor = isCustomSensor
   const totalDofFeet = totalDofInches / 12;
   const dofCharacter =
     totalDofFeet < 0.5
-      ? { label: "Macro / Product", color: "purple" }
+      ? { label: "Macro / Producto", color: "purple" }
       : totalDofFeet < 3
-      ? { label: "Portrait Range", color: "blue" }
-      : totalDofFeet < 10
-      ? { label: "Group / Event", color: "teal" }
-      : totalDofFeet < 30
-      ? { label: "Street / Architecture", color: "green" }
-      : { label: "Landscape", color: "gray" };
+        ? { label: "Rango de Retrato", color: "blue" }
+        : totalDofFeet < 10
+          ? { label: "Grupo / Evento", color: "teal" }
+          : totalDofFeet < 30
+            ? { label: "Calle / Arquitectura", color: "green" }
+            : { label: "Paisaje", color: "gray" };
 
   // ── Theme-aware colors 
   const cardBg = useColorModeValue("white", "gray.700");
@@ -296,7 +296,7 @@ const cropFactor = isCustomSensor
       >
         <Tooltip
           label={
-            colorMode === "dark" ? "Switch to light mode" : "Switch to dark mode"
+            colorMode === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"
           }
         >
           <IconButton
@@ -330,21 +330,21 @@ const cropFactor = isCustomSensor
         <SimpleGrid columns={4} spacing={3}>
           {[
             {
-              label: "Near Focus",
+              label: "Foco Cercano",
               value: convertUnits(nearFocalPointInInches, 0),
             },
             {
-              label: "Far Focus",
+              label: "Foco Lejano",
               value: isInfinityFar
                 ? "∞"
                 : convertUnits(farFocalPointInInches, 0),
             },
             {
-              label: "Total DoF",
+              label: "PdC Total",
               value: isInfinityFar ? "∞" : convertUnits(totalDofInches, 0),
             },
             {
-              label: "Hyperfocal",
+              label: "Hiperfocal",
               value: convertUnits(hyperFocalDistanceInInches, 0),
             },
           ].map(({ label, value }) => (
@@ -386,8 +386,8 @@ const cropFactor = isCustomSensor
           <Tooltip
             label={
               canSetHyperfocal
-                ? "Focus at hyperfocal distance — everything from half this distance to ∞ will be sharp"
-                : `Hyperfocal (${convertUnits(hyperFocalDistanceInInches, 0)}) is beyond the scene range`
+                ? "Enfocar a distancia hiperfocal — todo desde la mitad de esta distancia hasta ∞ estará nítido"
+                : `La hiperfocal (${convertUnits(hyperFocalDistanceInInches, 0)}) está más allá del rango de la escena`
             }
           >
             <Button
@@ -401,7 +401,7 @@ const cropFactor = isCustomSensor
                 )
               }
             >
-              Set Hyperfocal
+              Fijar Hiperfocal
             </Button>
           </Tooltip>
         </Flex>
@@ -413,11 +413,11 @@ const cropFactor = isCustomSensor
           <Flex gap={2} align="center">
             <Flex w="20%" justify="flex-end" align="center" gap={1.5}>
               <Icon as={TbRuler} boxSize={4} color={mutedText} />
-              <Text fontSize="sm">Units</Text>
+              <Text fontSize="sm">Unidades</Text>
             </Flex>
             <Box flexGrow={1}>
               <RadioGroup
-                onChange={(v) => setSystem(v as "Imperial" | "Metric")}
+                onChange={(v) => setSystem(v as "Imperial" | "Métrico")}
                 value={system}
               >
                 <Stack direction="row">
@@ -438,7 +438,7 @@ const cropFactor = isCustomSensor
             <Flex w="20%" justify="flex-end" align="center" gap={1.5}>
               <Icon as={TbRuler} boxSize={4} color={mutedText} />
               <Text fontSize="sm" textAlign="right">
-                Distance ({system === "Imperial" ? "ft" : "m"})
+                Distancia ({system === "Imperial" ? "pies" : "m"})
               </Text>
             </Flex>
             <Box flexGrow={1}>
@@ -471,7 +471,7 @@ const cropFactor = isCustomSensor
             <Flex w="20%" justify="flex-end" align="center" gap={1.5}>
               <Icon as={TbZoomIn} boxSize={4} color={mutedText} />
               <Text fontSize="sm" textAlign="right">
-                Focal Length (mm)
+                Distancia Focal (mm)
               </Text>
             </Flex>
             <Box flexGrow={1}>
@@ -500,10 +500,10 @@ const cropFactor = isCustomSensor
             <Box w="20%"></Box>
             <Box flexGrow={1}>
               <Flex justify="space-between" align="center">
-                <img src={Fisheye} alt="Fisheye lens" style={{ height: 50 }} />
-                {sensor !== "35mm (full frame)" && (
+                <img src={Fisheye} alt="Lente ojo de pez" style={{ height: 50 }} />
+                {sensor !== "35mm (formato completo)" && (
                   <Text fontSize="xs" color={mutedText}>
-                    ≈ {equivalentFocalLength}mm full-frame equivalent
+                    ≈ {equivalentFocalLength}mm equivalente en formato completo
                   </Text>
                 )}
                 <img
@@ -521,7 +521,7 @@ const cropFactor = isCustomSensor
           <Flex gap={2} align="center">
             <Flex w="20%" justify="flex-end" align="center" gap={1.5}>
               <Icon as={TbAperture} boxSize={4} color={mutedText} />
-              <Text fontSize="sm">Aperture</Text>
+              <Text fontSize="sm">Apertura</Text>
             </Flex>
             <Box flexGrow={1}>
               <Slider
@@ -555,8 +555,8 @@ const cropFactor = isCustomSensor
                 fontSize="xs"
                 rounded="md"
               >
-                ⚠ Diffraction may reduce sharpness above f/
-                {diffractionLimitFStop.toFixed(1)} on this sensor
+                ⚠ La difracción puede reducir la nitidez por encima de f/
+                {diffractionLimitFStop.toFixed(1)} en este sensor
               </Badge>
             </Flex>
           )}
@@ -565,27 +565,27 @@ const cropFactor = isCustomSensor
         {/* Sensor + Subject */}
         <Box pt={6}>
           {isCustomSensor && (
-  <Box mt={2}>
-    <Flex gap={2} align="center" mb={1}>
-      <Text fontSize="xs" w="80px" color={mutedText}>Width (mm)</Text>
-      <input
-        type="number"
-        value={customSensorWidth}
-        onChange={(e) => setCustomSensorWidth(Number(e.target.value))}
-        style={{ width: 70, padding: "2px 6px", borderRadius: 6, border: "1px solid #ccc" }}
-      />
-    </Flex>
-    <Flex gap={2} align="center" mb={1}>
-      <Text fontSize="xs" w="80px" color={mutedText}>Height (mm)</Text>
-      <input
-        type="number"
-        value={customSensorHeight}
-        onChange={(e) => setCustomSensorHeight(Number(e.target.value))}
-        style={{ width: 70, padding: "2px 6px", borderRadius: 6, border: "1px solid #ccc" }}
-      />
-    </Flex>
-  </Box>
-)}<Flex gap={3} direction={{ base: "column", md: "row" }}>
+            <Box mt={2}>
+              <Flex gap={2} align="center" mb={1}>
+                <Text fontSize="xs" w="80px" color={mutedText}>Ancho (mm)</Text>
+                <input
+                  type="number"
+                  value={customSensorWidth}
+                  onChange={(e) => setCustomSensorWidth(Number(e.target.value))}
+                  style={{ width: 70, padding: "2px 6px", borderRadius: 6, border: "1px solid #ccc" }}
+                />
+              </Flex>
+              <Flex gap={2} align="center" mb={1}>
+                <Text fontSize="xs" w="80px" color={mutedText}>Alto (mm)</Text>
+                <input
+                  type="number"
+                  value={customSensorHeight}
+                  onChange={(e) => setCustomSensorHeight(Number(e.target.value))}
+                  style={{ width: 70, padding: "2px 6px", borderRadius: 6, border: "1px solid #ccc" }}
+                />
+              </Flex>
+            </Box>
+          )}<Flex gap={3} direction={{ base: "column", md: "row" }}>
             <Flex gap={2} width={{ base: "100%", md: "50%" }}>
               <Flex
                 w={{ base: "72px", md: "20%" }}
@@ -624,7 +624,7 @@ const cropFactor = isCustomSensor
                       {key}
                     </option>
                   ))}
-                  <option value="Custom">Custom</option>
+                  <option value="Personalizado">Personalizado</option>
                 </Select>
               </Box>
             </Flex>
@@ -640,7 +640,7 @@ const cropFactor = isCustomSensor
               >
                 <Icon as={TbUser} boxSize={4} color={mutedText} />
                 <Text fontSize="sm" textAlign="right">
-                  Subject
+                  Sujeto
                 </Text>
               </Flex>
               <Box flexGrow={1}>
@@ -654,7 +654,7 @@ const cropFactor = isCustomSensor
                   _active={nativeSelectStyles._active}
                   sx={nativeSelectStyles.sx}
                   value={subject}
-                  placeholder="Subject"
+                  placeholder="Sujeto"
                   onChange={(evt) => {
                     if (
                       SUBJECTS[evt?.target?.value as keyof typeof SUBJECTS]
@@ -687,7 +687,7 @@ const cropFactor = isCustomSensor
             letterSpacing="wider"
             mb={3}
           >
-            Quick Presets
+            Ajustes Rápidos
           </Text>
           <Wrap justify="center" spacing={2}>
             {COMMON_SETUPS.map((setup) => (
@@ -712,19 +712,7 @@ const cropFactor = isCustomSensor
 
         {/* GitHub Footer */}
         <Box pt={2} pb={6} textAlign="center">
-          <Button
-            as="a"
-            href="https://github.com/jherr/depth-of-field"
-            target="_blank"
-            rel="noreferrer"
-            size="sm"
-            variant="ghost"
-            leftIcon={<Icon as={FiGithub} />}
-            color={mutedText}
-            _hover={{ color: colorMode === "dark" ? "gray.200" : "gray.800" }}
-          >
-            Contribute on GitHub
-          </Button>
+
         </Box>
       </Box>
     </>

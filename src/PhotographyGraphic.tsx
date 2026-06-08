@@ -45,23 +45,23 @@ const HumanAtDesk = () => (
 // the large inline SVG paths into a separate module.
 // eslint-disable-next-line react-refresh/only-export-components
 export const SUBJECTS = {
-  Human: {
+  Humano: {
     graphic: Human,
     height: 72,
   },
-  "Human At Desk": {
+  "Humano en Escritorio": {
     graphic: HumanAtDesk,
     height: 54,
   },
-  "Small Dog": {
+  "Perro Pequeño": {
     graphic: SmallDog,
     height: 20,
   },
-  "Medium Dog": {
+  "Perro Mediano": {
     graphic: MediumDog,
     height: 30,
   },
-  "Large Dog": {
+  "Perro Grande": {
     graphic: LargeDog,
     height: 40,
   },
