@@ -21,7 +21,7 @@ function App() {
       <AppBar position="static" color="default" elevation={1} sx={{ borderBottom: "1px solid", borderColor: theme.palette.divider }}>
         <Toolbar variant="dense">
           <Typography variant="h6" color="inherit" sx={{ flexGrow: 1, fontWeight: "bold" }}>
-            Fotografica Zebra
+            Utilidades fotográficas
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mr: 2 }}>
             <Button
