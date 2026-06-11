@@ -45,23 +45,23 @@ const HumanAtDesk = () => (
 // the large inline SVG paths into a separate module.
 // eslint-disable-next-line react-refresh/only-export-components
 export const SUBJECTS = {
-  Human: {
+  Humano: {
     graphic: Human,
     height: 72,
   },
-  "Human At Desk": {
+  "Humano en Escritorio": {
     graphic: HumanAtDesk,
     height: 54,
   },
-  "Small Dog": {
+  "Perro Pequeño": {
     graphic: SmallDog,
     height: 20,
   },
-  "Medium Dog": {
+  "Perro Mediano": {
     graphic: MediumDog,
     height: 30,
   },
-  "Large Dog": {
+  "Perro Grande": {
     graphic: LargeDog,
     height: 40,
   },
@@ -135,6 +135,7 @@ export default function PhotographyGraphic({
   nearFocalPointInInches,
   farFocalPointInInches,
   farDistanceInInches,
+  hyperFocalDistanceInInches,
   subject,
   focalLength,
   aperture,
@@ -147,6 +148,7 @@ export default function PhotographyGraphic({
   nearFocalPointInInches: number;
   farFocalPointInInches: number;
   farDistanceInInches: number;
+  hyperFocalDistanceInInches: number;
   focalLength: number;
   aperture: number;
   system: string;
@@ -356,6 +358,44 @@ export default function PhotographyGraphic({
         fill="red"
         fillOpacity={0.2}
       />
+
+      {/* Hyperfocal Distance Marker */}
+      {(() => {
+        const isInfinity = hyperFocalDistanceInInches > farDistanceInInches;
+        const hX = isInfinity ? farDistanceInInches : hyperFocalDistanceInInches;
+        
+        return (
+          <g>
+            <line
+              x1={hX}
+              y1={0}
+              x2={hX}
+              y2={height}
+              stroke="#2196f3"
+              strokeWidth={0.5}
+              strokeDasharray="2,2"
+            />
+            <rect 
+              x={hX - 4} 
+              y={height + 1.5} 
+              width={8} 
+              height={3} 
+              fill="#2196f3" 
+              rx={0.5} 
+            />
+            <text
+              x={hX}
+              y={height + 3.7}
+              fill="white"
+              fontSize={2.5}
+              fontWeight="bold"
+              textAnchor="middle"
+            >
+              H{isInfinity ? ": ∞" : ""}
+            </text>
+          </g>
+        );
+      })()}
     </svg>
   );
 }
