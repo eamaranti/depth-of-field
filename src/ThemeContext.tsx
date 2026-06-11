@@ -8,7 +8,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType>({
   colorMode: "light",
-  toggleColorMode: () => {},
+  toggleColorMode: () => { },
 });
 
 export const useColorMode = () => useContext(ThemeContext);
@@ -32,7 +32,7 @@ export function CustomThemeProvider({ children }: { children: ReactNode }) {
         palette: {
           mode,
           primary: {
-            main: "#319795", // Teal equivalent from Chakra colorScheme="teal" / "blue"
+            main: "#434343ff", // Teal equivalent from Chakra colorScheme="teal" / "blue"
           },
           secondary: {
             main: "#3182ce", // Blue

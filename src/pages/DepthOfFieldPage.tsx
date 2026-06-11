@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Slider,
   Box,
@@ -7,21 +7,21 @@ import {
   Button,
   Grid,
   Chip,
-  Tooltip,
   Divider,
   MenuItem,
   useTheme,
   Stack,
   FormControl,
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { TbRuler, TbAperture, TbZoomIn, TbUser } from "react-icons/tb";
-import { FiCamera } from "react-icons/fi";
+import { FiCamera, FiChevronDown } from "react-icons/fi";
 import { toImperial, toMetric } from "../utils/units";
 
 import PhotographyGraphic, { SUBJECTS } from "../PhotographyGraphic";
-
-import Telephoto from "../assets/100-400.png";
-import Fisheye from "../assets/fishey.png";
 
 const CIRCLES_OF_CONFUSION: Record<
   string,
@@ -239,356 +239,306 @@ function DepthOfFieldPage() {
             : { label: "Paisaje", color: "default" };
 
   // ── Theme-aware colors 
-  const cardBg = theme.palette.mode === "light" ? "white" : theme.palette.grey[800];
   const borderColor = theme.palette.divider;
   const mutedText = theme.palette.text.secondary;
   const graphicTextColor = theme.palette.mode === "light" ? "#1A202C" : "#F7FAFC";
 
-  const distanceMarks = useMemo(() => {
-    if (system === "Imperial") {
-      return new Array(Math.floor(farDistanceInInches / 24) + 1)
-        .fill(0)
-        .map((_v, i) => (i + 1) * 24)
-        .map((val) => ({
-          value: val,
-          label: `${val / 12}'`,
-        }));
-    } else {
-      const farDistanceInMeters = farDistanceInInches * 0.0254;
-      const convertMetersToInches = (meters: number) => meters * 39.3701;
-      return new Array(Math.floor(farDistanceInMeters) + 1)
-        .fill(0)
-        .map((_val, val) => ({
-          value: convertMetersToInches(val + 1),
-          label: `${val + 1}m`,
-        }));
-    }
-  }, [system, farDistanceInInches]);
-
-  const focalLengthMarks = [14, 28, 35, 50, 70, 85, 100, 135, 155, 200].map(v => ({ value: v, label: v.toString() }));
-  const apertureMarks = [0.8, 1.4, 1.8, 2.8, 4, 5.6, 8, 11, 16, 22].map(v => ({ value: v, label: v.toString() }));
-
   return (
-    <>
-      <Box sx={{ px: { xs: 2, md: 4 }, pt: 4, pb: 1, maxWidth: 1200, margin: "0 auto" }}>
-        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
+    <Box sx={{ px: { xs: 2, md: 4 }, py: 4, maxWidth: 1400, margin: "0 auto" }}>
+      
+      {/* HEADER */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: "900", mb: 1, letterSpacing: "-0.5px" }}>
           Calculadora de Profundidad de Campo e Hiperfocal
         </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Ingresa la distancia focal, la apertura y el tamaño del sensor para graficar el área exacta de nitidez y la hiperfocal.
+        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 800 }}>
+          Ingresa la distancia focal, la apertura y el tamaño del sensor para graficar el área exacta de nitidez y la hiperfocal. Utiliza los preajustes para configuraciones comunes.
         </Typography>
       </Box>
-      <Box sx={{ p: 1, pt: 2, maxWidth: 1200, margin: "0 auto" }}>
-        <PhotographyGraphic
-          distanceToSubjectInInches={distanceToSubjectInInches}
-          nearFocalPointInInches={nearFocalPointInInches}
-          farFocalPointInInches={farFocalPointInInches}
-          farDistanceInInches={farDistanceInInches}
-          hyperFocalDistanceInInches={hyperFocalDistanceInInches}
-          subject={subject as keyof typeof SUBJECTS}
-          focalLength={focalLengthInMillimeters}
-          aperture={aperture}
-          system={system}
-          verticalFieldOfView={verticalFieldOfView}
-          textColor={graphicTextColor}
-          onChangeDistance={(val) => setDistanceToSubjectInInches(val)}
-        />
-      </Box>
 
-      {/* ── DoF Stats Panel ── */}
-      <Box sx={{ px: 3, pt: 1, maxWidth: 1200, margin: "0 auto" }}>
-        <Grid container spacing={1.5}>
-          {[
-            {
-              label: "Foco Cercano",
-              value: convertUnits(nearFocalPointInInches, 0),
-            },
-            {
-              label: "Foco Lejano",
-              value: isInfinityFar
-                ? "∞"
-                : convertUnits(farFocalPointInInches, 0),
-            },
-            {
-              label: "PdC Total",
-              value: isInfinityFar ? "∞" : convertUnits(totalDofInches, 0),
-            },
-            {
-              label: "Hiperfocal",
-              value: convertUnits(hyperFocalDistanceInInches, 0),
-            },
-          ].map(({ label, value }) => (
-            <Grid size={{ xs: 6, sm: 3 }} key={label}>
-              <Box
-                sx={{
-                  backgroundColor: cardBg,
-                  borderRadius: 2,
-                  p: 1.5,
-                  textAlign: "center",
-                  border: "1px solid",
-                  borderColor: borderColor,
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: mutedText,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    display: "block",
+      <Grid container spacing={4}>
+        
+        {/* LEFT COLUMN: CONTROLS */}
+        <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+          
+          {/* PRESETS */}
+          <Paper elevation={0} sx={{ p: 3, mb: 3, borderRadius: 3, border: "1px solid", borderColor }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: mutedText, textTransform: "uppercase", letterSpacing: "0.05em", mb: 2 }}>
+              Ajustes Rápidos (Presets)
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+              {COMMON_SETUPS.map((setup) => (
+                <Chip
+                  key={setup.name}
+                  label={setup.name}
+                  onClick={() => {
+                    setFocalLengthInMillimeters(setup.focalLength);
+                    setAperture(setup.aperture);
+                    setSensor(setup.sensor);
+                    setDistanceToSubjectInInches(setup.idealDistance);
                   }}
-                >
-                  {label}
-                </Typography>
-                <Typography variant="h6" sx={{ fontWeight: "bold", mt: 0.5 }}>
-                  {value}
-                </Typography>
+                  variant="outlined"
+                  sx={{ 
+                    borderRadius: 2, 
+                    transition: "all 0.2s",
+                    "&:hover": { bgcolor: "primary.main", color: "primary.contrastText", borderColor: "primary.main" }
+                  }}
+                />
+              ))}
+            </Box>
+          </Paper>
+
+          {/* MAIN CONTROLS */}
+          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: "1px solid", borderColor }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: mutedText, textTransform: "uppercase", letterSpacing: "0.05em", mb: 3 }}>
+              Controles de Lente
+            </Typography>
+
+            <Stack spacing={4}>
+              {/* Distance */}
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: "space-between", mb: 1 }}>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                    <TbRuler size={18} color={theme.palette.primary.main} />
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>Distancia al Sujeto</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontWeight: "bold" }}>
+                    {convertUnits(distanceToSubjectInInches, 1)}
+                  </Typography>
+                </Stack>
+                <Slider
+                  value={distanceToSubjectInInches}
+                  onChange={(_, val) => setDistanceToSubjectInInches(val as number)}
+                  min={10}
+                  max={400}
+                  step={1}
+                />
               </Box>
-            </Grid>
-          ))}
-        </Grid>
 
-        {/* DoF character badge + Set Hyperfocal action */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 1.5 }}>
-          <Chip
-            color={dofCharacter.color as any}
-            size="small"
-            label={dofCharacter.label}
-          />
-          <Tooltip
-            title={
-              canSetHyperfocal
-                ? "Enfocar a distancia hiperfocal — todo desde la mitad de esta distancia hasta ∞ estará nítido"
-                : `La hiperfocal (${convertUnits(hyperFocalDistanceInInches, 0)}) está más allá del rango de la escena`
-            }
-          >
-            <span>
-              <Button
-                size="small"
-                variant="outlined"
-                color="primary"
-                disabled={!canSetHyperfocal}
-                onClick={() =>
-                  setDistanceToSubjectInInches(
-                    Math.round(hyperFocalDistanceInInches)
-                  )
-                }
-              >
-                Fijar Hiperfocal
-              </Button>
-            </span>
-          </Tooltip>
-        </Box>
-      </Box>
-      <Divider sx={{ mt: 4, mb: 2, borderColor }} />
-
-      {/* Quick Presets */}
-      <Box sx={{ pt: 2 }}>
-        <Typography
-          variant="caption"
-          sx={{
-            fontWeight: 600,
-            color: mutedText,
-            textAlign: "center",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            display: "block",
-            mb: 2,
-          }}
-        >
-          Ajustes Rápidos
-        </Typography>
-        <Grid container spacing={1} sx={{ justifyContent: "center" }}>
-          {COMMON_SETUPS.map((setup) => (
-            <Grid key={setup.name}>
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={() => {
-                  setFocalLengthInMillimeters(setup.focalLength);
-                  setAperture(setup.aperture);
-                  setSensor(setup.sensor);
-                  setDistanceToSubjectInInches(setup.idealDistance);
-                }}
-              >
-                {setup.name}
-              </Button>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-      {/* ── Controls ── */}
-      <Box sx={{ px: 3, pb: 4, maxWidth: 1200, margin: "0 auto" }}>
-        {/* Subject Distance */}
-        <Box sx={{ pt: 3 }}>
-          <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-            <Stack direction="row" spacing={1} sx={{ width: "20%", justifyContent: "flex-end", alignItems: "center" }}>
-              <TbRuler size={16} color={mutedText} />
-              <Typography variant="body2" sx={{ textAlign: "right" }}>
-                Distancia ({system === "Imperial" ? "pies" : "m"})
-              </Typography>
-            </Stack>
-            <Box sx={{ flexGrow: 1, px: 2 }}>
-              <Slider
-                aria-label="distance to subject"
-                value={distanceToSubjectInInches}
-                onChange={(_, val) => setDistanceToSubjectInInches(val as number)}
-                min={10}
-                max={400}
-                step={1}
-                marks={distanceMarks}
-              />
-            </Box>
-          </Stack>
-        </Box>
-
-        {/* Focal Length */}
-        <Box sx={{ pt: 2 }}>
-          <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-            <Stack direction="row" spacing={1} sx={{ width: "20%", justifyContent: "flex-end", alignItems: "center" }}>
-              <TbZoomIn size={16} color={mutedText} />
-              <Typography variant="body2" sx={{ textAlign: "right" }}>
-                Distancia Focal (mm)
-              </Typography>
-            </Stack>
-            <Box sx={{ flexGrow: 1, px: 2 }}>
-              <Slider
-                aria-label="focal length"
-                value={focalLengthInMillimeters}
-                onChange={(_, val) => setFocalLengthInMillimeters(val as number)}
-                min={3}
-                max={400}
-                step={1}
-                marks={focalLengthMarks}
-              />
-            </Box>
-          </Stack>
-          <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
-            <Box sx={{ width: "20%" }}></Box>
-            <Box sx={{ flexGrow: 1, px: 2 }}>
-              <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                <img src={Fisheye} alt="Lente ojo de pez" style={{ height: 50 }} />
+              {/* Focal Length */}
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: "space-between", mb: 1 }}>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                    <TbZoomIn size={18} color={theme.palette.primary.main} />
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>Distancia Focal</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontWeight: "bold" }}>
+                    {focalLengthInMillimeters} mm
+                  </Typography>
+                </Stack>
+                <Slider
+                  value={focalLengthInMillimeters}
+                  onChange={(_, val) => setFocalLengthInMillimeters(val as number)}
+                  min={3}
+                  max={400}
+                  step={1}
+                />
                 {sensor !== "35mm (formato completo)" && (
-                  <Typography variant="caption" sx={{ color: mutedText }}>
-                    ≈ {equivalentFocalLength}mm equivalente en formato completo
+                  <Typography variant="caption" sx={{ color: mutedText, display: 'block', mt: 0.5 }}>
+                    ≈ {equivalentFocalLength}mm equiv. en FF
                   </Typography>
                 )}
-                <img src={Telephoto} alt="100-400 lens" style={{ height: 50 }} />
-              </Stack>
-            </Box>
-          </Stack>
-        </Box>
+              </Box>
 
-        {/* Aperture */}
-        <Box sx={{ pt: 2 }}>
-          <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-            <Stack direction="row" spacing={1} sx={{ width: "20%", justifyContent: "flex-end", alignItems: "center" }}>
-              <TbAperture size={16} color={mutedText} />
-              <Typography variant="body2">Apertura</Typography>
-            </Stack>
-            <Box sx={{ flexGrow: 1, px: 2 }}>
-              <Slider
-                aria-label="aperture"
-                value={aperture}
-                onChange={(_, val) => setAperture(val as number)}
-                min={0.8}
-                max={22}
-                step={0.1}
-                marks={apertureMarks}
-              />
-            </Box>
-          </Stack>
-          {hasDiffractionRisk && (
-            <Stack direction="row" sx={{ mt: 1, pl: "calc(20% + 16px)" }}>
-              <Chip
-                color="warning"
-                variant="outlined"
-                size="small"
-                label={`⚠ La difracción puede reducir la nitidez por encima de f/${diffractionLimitFStop.toFixed(1)} en este sensor`}
-              />
-            </Stack>
-          )}
-        </Box>
+              {/* Aperture */}
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: "space-between", mb: 1 }}>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                    <TbAperture size={18} color={theme.palette.primary.main} />
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>Apertura</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontWeight: "bold" }}>
+                    f/{aperture.toFixed(1)}
+                  </Typography>
+                </Stack>
+                <Slider
+                  value={aperture}
+                  onChange={(_, val) => setAperture(val as number)}
+                  min={0.8}
+                  max={22}
+                  step={0.1}
+                />
+                {hasDiffractionRisk && (
+                  <Typography variant="caption" color="warning.main" sx={{ display: 'block', mt: 0.5 }}>
+                    ⚠ Riesgo de difracción en este sensor
+                  </Typography>
+                )}
+              </Box>
 
-        {/* Sensor + Subject */}
-        <Box sx={{ pt: 3 }}>
-          {isCustomSensor && (
-            <Box sx={{ mt: 1, mb: 2 }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: "center", mb: 0.5 }}>
-                <Typography variant="caption" sx={{ width: 80, color: mutedText }}>Ancho (mm)</Typography>
-                <input
-                  type="number"
-                  value={customSensorWidth}
-                  onChange={(e) => setCustomSensorWidth(Number(e.target.value))}
-                  style={{ width: 70, padding: "2px 6px", borderRadius: 6, border: "1px solid #ccc" }}
-                />
-              </Stack>
-              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                <Typography variant="caption" sx={{ width: 80, color: mutedText }}>Alto (mm)</Typography>
-                <input
-                  type="number"
-                  value={customSensorHeight}
-                  onChange={(e) => setCustomSensorHeight(Number(e.target.value))}
-                  style={{ width: 70, padding: "2px 6px", borderRadius: 6, border: "1px solid #ccc" }}
-                />
-              </Stack>
-            </Box>
-          )}
+            </Stack>
+
+            <Divider sx={{ my: 3 }} />
+
+            {/* ADVANCED SETTINGS ACCORDION */}
+            <Accordion elevation={0} disableGutters sx={{ bgcolor: "transparent", "&:before": { display: "none" } }}>
+              <AccordionSummary expandIcon={<FiChevronDown />} sx={{ px: 0, minHeight: 0, "& .MuiAccordionSummary-content": { my: 1 } }}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: "bold" }}>Configuración Avanzada</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ px: 0, pb: 0 }}>
+                <Stack spacing={3}>
+                  {/* Sensor */}
+                  <Box>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: "center", mb: 1 }}>
+                      <FiCamera size={16} color={mutedText} />
+                      <Typography variant="body2">Tamaño de Sensor</Typography>
+                    </Stack>
+                    <FormControl size="small" fullWidth>
+                      <Select
+                        value={sensor}
+                        onChange={(evt) => setSensor(evt.target.value as string)}
+                      >
+                        {Object.entries(CIRCLES_OF_CONFUSION).map(([key]) => (
+                          <MenuItem key={key} value={key}>{key}</MenuItem>
+                        ))}
+                        <MenuItem value="Personalizado">Personalizado</MenuItem>
+                      </Select>
+                    </FormControl>
+                    {isCustomSensor && (
+                      <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption">Ancho (mm)</Typography>
+                          <input type="number" value={customSensorWidth} onChange={(e) => setCustomSensorWidth(Number(e.target.value))} style={{ width: "100%", padding: 6, borderRadius: 4, border: "1px solid #ccc" }} />
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption">Alto (mm)</Typography>
+                          <input type="number" value={customSensorHeight} onChange={(e) => setCustomSensorHeight(Number(e.target.value))} style={{ width: "100%", padding: 6, borderRadius: 4, border: "1px solid #ccc" }} />
+                        </Box>
+                      </Stack>
+                    )}
+                  </Box>
+
+                  {/* Subject icon */}
+                  <Box>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: "center", mb: 1 }}>
+                      <TbUser size={16} color={mutedText} />
+                      <Typography variant="body2">Ícono de Sujeto</Typography>
+                    </Stack>
+                    <FormControl size="small" fullWidth>
+                      <Select
+                        value={subject}
+                        onChange={(evt) => setSubject(evt.target.value as string)}
+                      >
+                        {Object.entries(SUBJECTS).map(([key]) => (
+                          <MenuItem key={key} value={key}>{key}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
+          </Paper>
+        </Grid>
+
+        {/* RIGHT COLUMN: VISUALIZATION & STATS */}
+        <Grid size={{ xs: 12, md: 7, lg: 8 }}>
+          
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 1, sm: 3 }, 
+              mb: 3, 
+              borderRadius: 3, 
+              border: "1px solid", 
+              borderColor,
+              background: theme.palette.mode === "dark" 
+                ? "linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(30,30,30,1) 100%)"
+                : "linear-gradient(180deg, rgba(250,250,250,1) 0%, rgba(255,255,255,1) 100%)",
+            }}
+          >
+            <PhotographyGraphic
+              distanceToSubjectInInches={distanceToSubjectInInches}
+              nearFocalPointInInches={nearFocalPointInInches}
+              farFocalPointInInches={farFocalPointInInches}
+              farDistanceInInches={farDistanceInInches}
+              hyperFocalDistanceInInches={hyperFocalDistanceInInches}
+              subject={subject as keyof typeof SUBJECTS}
+              focalLength={focalLengthInMillimeters}
+              aperture={aperture}
+              system={system}
+              verticalFieldOfView={verticalFieldOfView}
+              textColor={graphicTextColor}
+              onChangeDistance={(val) => setDistanceToSubjectInInches(val)}
+            />
+          </Paper>
+
+          {/* STATS TILES */}
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                <Stack direction="row" spacing={1} sx={{ width: { xs: 72, md: "30%" }, justifyContent: "flex-end", alignItems: "center" }}>
-                  <FiCamera size={16} color={mutedText} />
-                  <Typography variant="body2" sx={{ textAlign: "right" }}>Sensor</Typography>
-                </Stack>
-                <FormControl size="small" sx={{ flexGrow: 1 }}>
-                  <Select
-                    value={sensor}
-                    onChange={(evt) => setSensor(evt.target.value as string)}
-                    displayEmpty
+            {[
+              {
+                label: "Foco Cercano",
+                value: convertUnits(nearFocalPointInInches, 1),
+                color: theme.palette.info.main,
+              },
+              {
+                label: "Foco Lejano",
+                value: isInfinityFar ? "∞" : convertUnits(farFocalPointInInches, 1),
+                color: theme.palette.info.main,
+              },
+              {
+                label: "Profundidad (PdC)",
+                value: isInfinityFar ? "∞" : convertUnits(totalDofInches, 1),
+                color: theme.palette.success.main,
+                badge: dofCharacter,
+              },
+              {
+                label: "Hiperfocal",
+                value: convertUnits(hyperFocalDistanceInInches, 1),
+                color: theme.palette.secondary.main,
+                action: canSetHyperfocal ? (
+                  <Button 
+                    size="small" 
+                    variant="contained" 
+                    color="secondary" 
+                    sx={{ mt: 1, width: "100%", py: 0.5, fontSize: "0.7rem", fontWeight: "bold", textTransform: "none" }}
+                    onClick={() => setDistanceToSubjectInInches(Math.round(hyperFocalDistanceInInches))}
                   >
-                    {Object.entries(CIRCLES_OF_CONFUSION).map(([key]) => (
-                      <MenuItem key={key} value={key}>
-                        {key}
-                      </MenuItem>
-                    ))}
-                    <MenuItem value="Personalizado">Personalizado</MenuItem>
-                  </Select>
-                </FormControl>
-              </Stack>
-            </Grid>
+                    Enfocar a H
+                  </Button>
+                ) : null
+              },
+            ].map(({ label, value, color, badge, action }) => (
+              <Grid size={{ xs: 6, sm: 3 }} key={label}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    borderRadius: 3,
+                    border: "1px solid",
+                    borderColor,
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: theme.shadows[4],
+                    }
+                  }}
+                >
+                  <Typography variant="caption" sx={{ color: mutedText, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", mb: 1 }}>
+                    {label}
+                  </Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 900, color }}>
+                    {value}
+                  </Typography>
+                  
+                  {badge && (
+                    <Chip size="small" label={badge.label} color={badge.color as any} sx={{ mt: 1, height: 20, fontSize: "0.65rem", fontWeight: "bold" }} />
+                  )}
+                  {action && action}
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                <Stack direction="row" spacing={1} sx={{ width: { xs: 72, md: "30%" }, justifyContent: "flex-end", alignItems: "center" }}>
-                  <TbUser size={16} color={mutedText} />
-                  <Typography variant="body2" sx={{ textAlign: "right" }}>Sujeto</Typography>
-                </Stack>
-                <FormControl size="small" sx={{ flexGrow: 1 }}>
-                  <Select
-                    value={subject}
-                    onChange={(evt) => {
-                      if (SUBJECTS[evt.target.value as keyof typeof SUBJECTS]) {
-                        setSubject(evt.target.value as string);
-                      }
-                    }}
-                    displayEmpty
-                  >
-                    {Object.entries(SUBJECTS).map(([key]) => (
-                      <MenuItem key={key} value={key}>
-                        {key}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Stack>
-            </Grid>
+                </Paper>
+              </Grid>
+            ))}
           </Grid>
-        </Box>
 
-
-      </Box>
-    </>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 
