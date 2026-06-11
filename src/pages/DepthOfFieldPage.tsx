@@ -270,12 +270,21 @@ function DepthOfFieldPage() {
 
   return (
     <>
-      <Box sx={{ p: 1, pt: 2 }}>
+      <Box sx={{ px: { xs: 2, md: 4 }, pt: 4, pb: 1, maxWidth: 1200, margin: "0 auto" }}>
+        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
+          Calculadora de Profundidad de Campo e Hiperfocal
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Ingresa la distancia focal, la apertura y el tamaño del sensor para graficar el área exacta de nitidez y la hiperfocal.
+        </Typography>
+      </Box>
+      <Box sx={{ p: 1, pt: 2, maxWidth: 1200, margin: "0 auto" }}>
         <PhotographyGraphic
           distanceToSubjectInInches={distanceToSubjectInInches}
           nearFocalPointInInches={nearFocalPointInInches}
           farFocalPointInInches={farFocalPointInInches}
           farDistanceInInches={farDistanceInInches}
+          hyperFocalDistanceInInches={hyperFocalDistanceInInches}
           subject={subject as keyof typeof SUBJECTS}
           focalLength={focalLengthInMillimeters}
           aperture={aperture}
@@ -287,7 +296,7 @@ function DepthOfFieldPage() {
       </Box>
 
       {/* ── DoF Stats Panel ── */}
-      <Box sx={{ px: 3, pt: 1 }}>
+      <Box sx={{ px: 3, pt: 1, maxWidth: 1200, margin: "0 auto" }}>
         <Grid container spacing={1.5}>
           {[
             {
@@ -409,7 +418,7 @@ function DepthOfFieldPage() {
         </Grid>
       </Box>
       {/* ── Controls ── */}
-      <Box sx={{ px: 3, pb: 4 }}>
+      <Box sx={{ px: 3, pb: 4, maxWidth: 1200, margin: "0 auto" }}>
         {/* Subject Distance */}
         <Box sx={{ pt: 3 }}>
           <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>

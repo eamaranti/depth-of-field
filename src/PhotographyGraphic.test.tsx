@@ -10,6 +10,7 @@ test("applies an explicit fill to SVG labels so they stay visible in dark mode",
       nearFocalPointInInches={60}
       farFocalPointInInches={90}
       farDistanceInInches={360}
+      hyperFocalDistanceInInches={120}
       subject="Humano"
       focalLength={50}
       aperture={1.8}
@@ -29,6 +30,7 @@ test("renders vertical distance labels with a dark clipped overlay inside the fi
       nearFocalPointInInches={60}
       farFocalPointInInches={90}
       farDistanceInInches={360}
+      hyperFocalDistanceInInches={120}
       subject="Humano"
       focalLength={50}
       aperture={1.8}
