@@ -10,7 +10,7 @@ import ExposureTrianglePage from "./pages/ExposureTrianglePage.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <CustomThemeProvider>
-      <BrowserRouter basename="/depth-of-field">
+      <BrowserRouter basename="/">
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<DepthOfFieldPage />} />
