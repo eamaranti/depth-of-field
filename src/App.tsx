@@ -50,6 +50,19 @@ function App() {
             >
               Triángulo de Exposición
             </Button>
+            <Button
+              component={NavLink}
+              to="/diafragma"
+              color="inherit"
+              sx={{
+                "&.active": {
+                  color: theme.palette.primary.main,
+                  fontWeight: "bold",
+                },
+              }}
+            >
+              Simulador de Diafragma
+            </Button>
           </Box>
           <Tooltip
             title={colorMode === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
