@@ -1,20 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { CustomThemeProvider } from "./ThemeContext.tsx";
 
 import App from "./App.tsx";
-
-const theme = extendTheme({
-  config: {
-    initialColorMode: "light",
-    useSystemColorMode: false,
-  },
-});
+import DepthOfFieldPage from "./pages/DepthOfFieldPage.tsx";
+import ExposureTrianglePage from "./pages/ExposureTrianglePage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
+    <CustomThemeProvider>
+      <BrowserRouter basename="/depth-of-field">
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route index element={<DepthOfFieldPage />} />
+            <Route path="triangulo" element={<ExposureTrianglePage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </CustomThemeProvider>
   </React.StrictMode>
 );
