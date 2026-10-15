@@ -61,7 +61,7 @@ export default function ApertureSimulatorPage() {
           </Typography>
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={4} sx={{ alignItems: "flex-start" }}>
-            
+
             {/* LENS GRAPHIC (SVG) */}
             <Box sx={{ flex: 1, width: "100%", display: "flex", justifyContent: "center" }}>
               <Box sx={{ width: "100%", maxWidth: 500, aspectRatio: "1/1", position: "relative" }}>
@@ -82,7 +82,7 @@ export default function ApertureSimulatorPage() {
                   {/* Outer Lens Barrel */}
                   <circle cx="0" cy="0" r="195" fill="#1a1a1a" stroke="#333" strokeWidth="4" />
                   <circle cx="0" cy="0" r="180" fill="url(#lensGlass)" stroke="#0a0a0a" strokeWidth="8" />
-                  
+
                   {/* The Light entering the hole */}
                   {/* It's always a circle, but the blades will cover it, making it look like an octagon! */}
                   <circle cx="0" cy="0" r={160} fill="url(#lightHole)" />
@@ -92,17 +92,17 @@ export default function ApertureSimulatorPage() {
                     {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
                       const angle = i * 45;
                       return (
-                        <g 
-                          key={i} 
+                        <g
+                          key={i}
                           style={{
                             transform: `rotate(${angle}deg) translate(0px, -${r}px)`,
                             transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
                           }}
                         >
-                          <polygon 
-                            points="-200,0 200,0 200,-250 -200,-250" 
-                            fill="#151515" 
-                            stroke="#333" 
+                          <polygon
+                            points="-200,0 200,0 200,-250 -200,-250"
+                            fill="#151515"
+                            stroke="#333"
                             strokeWidth="1.5"
                             strokeOpacity="0.8"
                           />
@@ -112,9 +112,9 @@ export default function ApertureSimulatorPage() {
                   </g>
 
                   {/* Inner Lens Ring Overlay (to cover the sharp edges of blades flying outside the barrel) */}
-                  <path 
-                    d="M 0 -200 A 200 200 0 1 0 0 200 A 200 200 0 1 0 0 -200 Z M 0 -175 A 175 175 0 1 1 0 175 A 175 175 0 1 1 0 -175 Z" 
-                    fill="#111" 
+                  <path
+                    d="M 0 -200 A 200 200 0 1 0 0 200 A 200 200 0 1 0 0 -200 Z M 0 -175 A 175 175 0 1 1 0 175 A 175 175 0 1 1 0 -175 Z"
+                    fill="#111"
                   />
                   <circle cx="0" cy="0" r="175" fill="none" stroke="#222" strokeWidth="2" />
                   <circle cx="0" cy="0" r="160" fill="none" stroke="#000" strokeWidth="4" />
@@ -125,7 +125,7 @@ export default function ApertureSimulatorPage() {
 
             {/* CONTROLS & FEEDBACK */}
             <Stack spacing={4} sx={{ flex: 1, width: "100%" }}>
-              
+
               <Paper sx={{ p: 4, borderRadius: 3, bgcolor: "background.paper", border: "1px solid", borderColor: "#333" }} elevation={4}>
                 <Typography variant="overline" color="text.secondary" sx={{ fontWeight: "bold" }}>
                   Apertura Seleccionada
@@ -154,7 +154,7 @@ export default function ApertureSimulatorPage() {
 
               <Paper sx={{ p: 3, borderRadius: 3, bgcolor: "background.paper", border: "1px solid", borderColor: "#333" }} elevation={4}>
                 <Stack spacing={3}>
-                  
+
                   <Box>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                       Luz Entrante
@@ -162,12 +162,12 @@ export default function ApertureSimulatorPage() {
                     <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
                       <Typography variant="body2" sx={{ width: 60 }}>Mínima</Typography>
                       <Box sx={{ flexGrow: 1, position: "relative", height: 10, borderRadius: 5, overflow: "hidden", bgcolor: "#333" }}>
-                        <Box 
-                          sx={{ 
+                        <Box
+                          sx={{
                             position: "absolute", top: 0, left: 0, height: "100%", width: `${lightPercentage}%`,
                             background: "linear-gradient(90deg, #f57f17 0%, #ffee58 100%)",
                             transition: "width 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
-                          }} 
+                          }}
                         />
                       </Box>
                       <Typography variant="body2" sx={{ width: 60, textAlign: "right" }}>Máxima</Typography>
